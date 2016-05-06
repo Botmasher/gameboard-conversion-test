@@ -50,7 +50,6 @@ public class GameController : MonoBehaviour {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
 			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
 				// set the space to current player color
-				hit.collider.GetComponent<GameSpace> ().changingColors = true;
 				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].color;
 				// end the turn
 				turnOver = true;

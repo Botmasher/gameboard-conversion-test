@@ -3,9 +3,6 @@ using System.Collections;
 
 public class GameSpace : MonoBehaviour {
 
-	// toggle color lerp from other scripts
-	public bool changingColors;
-
 	// the color to change to
 	public Color targetColor;
 
@@ -13,11 +10,14 @@ public class GameSpace : MonoBehaviour {
 	public int rowIndex;
 	public int columnIndex;
 
+	void Start () {
+		targetColor = GetComponent<MeshRenderer> ().material.color;
+	}
 
 	void Update () {
-		// change colors triggered
-		if (changingColors) {
-			GetComponent<MeshRenderer> ().material.color = Color.Lerp (GetComponent<MeshRenderer>().material.color, targetColor, Time.deltaTime);
+		// lerp towards new color when target color gets changed
+		if (GetComponent<MeshRenderer> ().material.color != targetColor) {
+			GetComponent<MeshRenderer> ().material.color = Color.Lerp (GetComponent<MeshRenderer> ().material.color, targetColor, 2f * Time.deltaTime);
 		}
 	}
 }
