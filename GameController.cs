@@ -4,8 +4,10 @@ using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
-	// list of players
-	[SerializeField]public List<Player> players = new List <Player>();
+	// list of colors used to create players
+	public List<Color> colors = new List<Color>();
+	// list to store created players
+	private List<Player> players = new List<Player>();
 
 	// track the current player
 	private int currentPlayer;
@@ -16,21 +18,30 @@ public class GameController : MonoBehaviour {
 	// game control flow
 	private bool turnOver = false;
 
-	// player attributes
-	[System.Serializable]
+	// Player and player attributes
+	//[System.Serializable]
 	public class Player {
-		public Color color;
+		// player properties: color
+		private Color color;
+		public Color tokenColor {
+			get {
+				return color;
+			} set {
+				color = value;
+			}
+		}
+		// player properties: number (id)
 		private int number;
 		public int Number {
 			get {
 				return number;
-			}
-			set {
+			} set {
 				number = value;
 			}
 		}
-		public Player (Color playerColor) {
-			color = playerColor;
+		public Player (int playerID, Color playerColor) {
+			tokenColor = playerColor;
+			Number = playerID;
 		}
 	}
 
@@ -38,9 +49,10 @@ public class GameController : MonoBehaviour {
 	void Start () {
 		// determine initial player
 		currentPlayer = 0;
-		// assign index to each player in list
-		for (int i = 0; i < players.Count; i++) {
-			players[i].Number = i+1;
+		// create players based on selected colors and add them to players list
+		for (int i = 0; i < colors.Count; i++) {
+			players.Add (new Player(i+1, colors[i]));
+			/*  ?? does Player need an id - or just use list index ??  */
 		}
 	}
 
@@ -50,7 +62,7 @@ public class GameController : MonoBehaviour {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
 			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
 				// set the space to current player color
-				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].color;
+				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].tokenColor;
 				// end the turn
 				turnOver = true;
 				StartCoroutine ("EndTurn");
