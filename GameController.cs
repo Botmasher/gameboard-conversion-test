@@ -30,60 +30,70 @@ public class GameController : MonoBehaviour {
 				color = value;
 			}
 		}
-		// player properties: number (id)
-		private int number;
-		public int Number {
-			get {
-				return number;
-			} set {
-				number = value;
-			}
-		}
-		public Player (int playerID, Color playerColor) {
+		public Player (Color playerColor) {
 			tokenColor = playerColor;
-			Number = playerID;
 		}
 	}
 
 
 	void Start () {
-		// determine initial player
+		
+		// set initial player
 		currentPlayer = 0;
+
 		// create players based on selected colors and add them to players list
 		for (int i = 0; i < colors.Count; i++) {
-			players.Add (new Player(i+1, colors[i]));
-			/*  ?? does Player need an id - or just use list index ??  */
+			players.Add (new Player(colors[i]));
 		}
+
 	}
 
+
 	void Update () {
+		
 		// raycast for mouse clicks on board space
 		if (!turnOver && Input.GetMouseButton (0)) {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
 			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
 				// set the space to current player color
 				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].tokenColor;
-				// end the turn
-				turnOver = true;
+				// give the next player a turn
 				StartCoroutine ("EndTurn");
 			}
 		}
+
 	}
 
 
-	IEnumerator EndTurn () {
-
-		yield return new WaitForSeconds (2f);
-
-		// cycle to next player
+	/**
+	 * 	Cycle to the next player
+	 */
+	void NextPlayer () {
 		currentPlayer ++;
 		if (currentPlayer >= players.Count) {
 			currentPlayer = 0;
 		}
-		// UI display new player and turn instructions
+	}
 
+
+	/**
+	 *	Thread for round over actions
+	 */
+	IEnumerator EndTurn () {
+
+		// skip any turn instructions
+		turnOver = true;
+
+		// wait
+		yield return new WaitForSeconds (2f);
+
+		// update players
+		NextPlayer();
+
+		// update UI
+
+		// start accessing next turn logic
 		turnOver = false;
-
 		yield return null;
 	}
 
