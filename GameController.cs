@@ -7,7 +7,7 @@ public class GameController : MonoBehaviour {
 	// list of colors used to create players
 	public List<Color> colors = new List<Color>();
 	// list to store created players
-	private List<Player> players = new List<Player>();
+	private List<GameObject> players = new List<GameObject>();
 
 	// track the current player
 	private int currentPlayer;
@@ -18,32 +18,19 @@ public class GameController : MonoBehaviour {
 	// game control flow
 	private bool turnOver = false;
 
-	// Player and player attributes
-	//[System.Serializable]
-	public class Player {
-		// player properties: color
-		private Color color;
-		public Color tokenColor {
-			get {
-				return color;
-			} set {
-				color = value;
-			}
-		}
-		public Player (Color playerColor) {
-			tokenColor = playerColor;
-		}
-	}
-
 
 	void Start () {
-		
-		// set initial player
+
+		// tag initial player
 		currentPlayer = 0;
 
-		// create players based on selected colors and add them to players list
+		// create players within player list based on how many colors were chosen
 		for (int i = 0; i < colors.Count; i++) {
-			players.Add (new Player(colors[i]));
+			// add and name player
+			players.Add (new GameObject (System.String.Format ("Player {0}", i)));
+			// set player's script behavior
+			players[i].AddComponent<Player>();
+			players[i].GetComponent<Player>().tokenColor = colors[i];
 		}
 
 	}
@@ -56,7 +43,7 @@ public class GameController : MonoBehaviour {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
 			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
 				// set the space to current player color
-				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].tokenColor;
+				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].GetComponent<Player>().tokenColor;
 				// give the next player a turn
 				StartCoroutine ("EndTurn");
 			}
