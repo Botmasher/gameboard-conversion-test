@@ -12,11 +12,8 @@ public class GameController : MonoBehaviour {
 	// track the current player
 	private int currentPlayer;
 
-	// raycast
-	private RaycastHit hit;
-
 	// game control flow
-	private bool turnOver = false;
+	public static List<bool> turnOver = new List <bool> ();
 
 
 	void Start () {
@@ -30,7 +27,10 @@ public class GameController : MonoBehaviour {
 			players.Add (new GameObject (System.String.Format ("Player {0}", i)));
 			// set player's script behavior
 			players[i].AddComponent<Player>();
+			players[i].GetComponent<Player>().uniqueId = i;
 			players[i].GetComponent<Player>().tokenColor = colors[i];
+			// add player's turnover toggle to list of turnover toggles
+			turnOver.Add (false);
 		}
 
 	}
@@ -38,15 +38,10 @@ public class GameController : MonoBehaviour {
 
 	void Update () {
 		
-		// raycast for mouse clicks on board space
-		if (!turnOver && Input.GetMouseButton (0)) {
-			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
-			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
-				// set the space to current player color
-				hit.collider.GetComponent<GameSpace> ().targetColor = players [currentPlayer].GetComponent<Player>().tokenColor;
-				// give the next player a turn
-				StartCoroutine ("EndTurn");
-			}
+		// check toggles to confirm all players have finished
+		if (!turnOver.Contains(false)) {
+			// end this turn
+			StartCoroutine ("EndTurn");
 		}
 
 	}
@@ -68,9 +63,6 @@ public class GameController : MonoBehaviour {
 	 */
 	IEnumerator EndTurn () {
 
-		// skip any turn instructions
-		turnOver = true;
-
 		// wait
 		yield return new WaitForSeconds (2f);
 
@@ -80,7 +72,11 @@ public class GameController : MonoBehaviour {
 		// update UI
 
 		// start accessing next turn logic
-		turnOver = false;
+		// reset turn over toggles for new turn
+		for (int i = 0; i < turnOver.Count; i++) {
+			turnOver [i] = false;
+		}
+
 		yield return null;
 	}
 
