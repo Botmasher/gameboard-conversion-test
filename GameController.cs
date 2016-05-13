@@ -33,6 +33,8 @@ public class GameController : MonoBehaviour {
 			turnOver.Add (false);
 		}
 
+		// redo turnOver list to check whose turn it is currently
+
 	}
 
 
@@ -40,7 +42,6 @@ public class GameController : MonoBehaviour {
 		
 		// check toggles to confirm all players have finished
 		if (!turnOver.Contains(false)) {
-			// end this turn
 			StartCoroutine ("EndTurn");
 		}
 

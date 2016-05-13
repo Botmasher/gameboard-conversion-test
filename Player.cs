@@ -38,6 +38,9 @@ public class Player : MonoBehaviour {
 				GameController.turnOver[index] = true;
 			}
 		}
+
+		// more robust check for raycast - send mssg to see if it's my turn!
+
 	}
 
 }
