@@ -13,14 +13,10 @@ public class GameController : MonoBehaviour {
 	private int currentPlayer;
 
 	// game control flow
-	public static List<bool> turnsOver = new List <bool> ();
 	public static bool endTurn = false;
 
 
 	void Start () {
-
-		// tag initial player (NextPlayer will add +1 to find zeroth player)
-		currentPlayer = -1;
 
 		// create players within player list based on how many colors were chosen
 		for (int i = 0; i < colors.Count; i++) {
@@ -30,22 +26,16 @@ public class GameController : MonoBehaviour {
 			players[i].AddComponent<Player>();
 			players[i].GetComponent<Player>().uniqueId = i;
 			players[i].GetComponent<Player>().tokenColor = colors[i];
-			// add player's turnover toggle to list of turnover toggles
-			turnsOver.Add (players[i].GetComponent<Player>().turnOver);
+			players[i].GetComponent<Player>().turnOver = true;
 		}
 
-		// redo turnOver list to check whose turn it is currently
-		NextPlayer();
+		// start the initial player's turn
+		players[0].GetComponent<Player>().turnOver = false;
 
 	}
 
 
 	void Update () {
-		
-		// check toggles to confirm all players have finished
-		if (!turnsOver.Contains(false)) {
-			StartCoroutine ("EndRound");
-		}
 
 		// turn over triggered by individual players
 		if (endTurn) {
@@ -59,30 +49,34 @@ public class GameController : MonoBehaviour {
 	 * 	Cycle to the next player
 	 */
 	void NextPlayer () {
-		// set the last player's turn state
-		turnsOver [currentPlayer] = true;
+
+		// end the last player's turn
+		players [currentPlayer].GetComponent<Player>().turnOver = true;
 
 		// figure out who is the next player
-		currentPlayer ++;
+		try { currentPlayer++; }
+		catch { currentPlayer = 0; }
+
+		// reset from last player to initial player
 		if (currentPlayer >= players.Count) {
 			currentPlayer = 0;
 		}
 
-		// set the next player's turn state
-		turnsOver [currentPlayer] = false;
+		StartCoroutine (PauseEndTurn (2f));
+
+		// start the next player's turn
+		players [currentPlayer].GetComponent<Player>().turnOver = false;
+
 	}
 
 
 	/**
-	 *	Thread for round over actions
+	 *	Thread for turn over actions
 	 */
-	IEnumerator EndRound () {
+	IEnumerator PauseEndTurn (float seconds) {
 
 		// wait
-		yield return new WaitForSeconds (2f);
-
-		// update players
-		NextPlayer();
+		yield return new WaitForSeconds (seconds);
 
 		// update UI
 

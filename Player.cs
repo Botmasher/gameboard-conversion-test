@@ -23,16 +23,12 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	// control flow and notifying gamecontroller
+	// control flow - notifies gamecontroller
 	public bool turnOver;
 
 	// raycast against gameboard
 	private RaycastHit hit;
 
-
-	void Start () {
-		turnOver = true;
-	}
 
 	void Update () {
 		// raycast for mouse clicks on board space
@@ -43,6 +39,7 @@ public class Player : MonoBehaviour {
 				hit.collider.GetComponent<GameSpace> ().targetColor = tokenColor;
 				// send message that player turn is over
 				turnOver = true;
+				GameController.endTurn = true;
 			}
 		}
 
