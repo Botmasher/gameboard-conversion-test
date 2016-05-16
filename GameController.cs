@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour {
 	private int currentPlayer;
 
 	// game control flow
-	public static bool endTurn = false;
+	public static bool endTurn;
 
 
 	void Start () {
@@ -30,6 +30,8 @@ public class GameController : MonoBehaviour {
 		}
 
 		// start the initial player's turn
+		currentPlayer = 0;
+		endTurn = false;
 		players[0].GetComponent<Player>().turnOver = false;
 
 	}
@@ -39,54 +41,34 @@ public class GameController : MonoBehaviour {
 
 		// turn over triggered by individual players
 		if (endTurn) {
-			NextPlayer ();
+			StartCoroutine (NextPlayer ());
 			endTurn = false;
 		}
 	}
 
 
 	/**
-	 * 	Cycle to the next player
+	 * 	Thread for turn over actions
 	 */
-	void NextPlayer () {
+	IEnumerator NextPlayer () {
 
 		// end the last player's turn
 		players [currentPlayer].GetComponent<Player>().turnOver = true;
 
-		// figure out who is the next player
-		try { currentPlayer++; }
-		catch { currentPlayer = 0; }
+		// index to the next player
+		currentPlayer++;
 
-		// reset from last player to initial player
+		// reset to initial player if index is the final player
 		if (currentPlayer >= players.Count) {
 			currentPlayer = 0;
 		}
 
-		StartCoroutine (PauseEndTurn (2f));
+		// wait
+		yield return new WaitForSeconds (1f);
 
 		// start the next player's turn
 		players [currentPlayer].GetComponent<Player>().turnOver = false;
 
-	}
-
-
-	/**
-	 *	Thread for turn over actions
-	 */
-	IEnumerator PauseEndTurn (float seconds) {
-
-		// wait
-		yield return new WaitForSeconds (seconds);
-
-		// update UI
-
-//		// start accessing next turn logic
-//		// reset turn over toggles for new turn
-//		for (int i = 0; i < turnsOver.Count; i++) {
-//			turnsOver [i] = false;
-//		}
-
-		yield return null;
 	}
 
 }

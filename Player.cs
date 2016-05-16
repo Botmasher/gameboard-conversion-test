@@ -31,6 +31,7 @@ public class Player : MonoBehaviour {
 
 
 	void Update () {
+		
 		// raycast for mouse clicks on board space
 		if (!turnOver && Input.GetMouseButton (0)) {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
@@ -42,8 +43,6 @@ public class Player : MonoBehaviour {
 				GameController.endTurn = true;
 			}
 		}
-
-		// more robust check for raycast - send mssg to see if it's my turn!
 
 	}
 
