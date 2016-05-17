@@ -26,13 +26,13 @@ public class GameController : MonoBehaviour {
 			players[i].AddComponent<Player>();
 			players[i].GetComponent<Player>().uniqueId = i;
 			players[i].GetComponent<Player>().tokenColor = colors[i];
-			players[i].GetComponent<Player>().turnOver = true;
+			TogglePlayer (i);		// start with all players off
 		}
 
-		// start the initial player's turn
+		// the initial player's turn
 		currentPlayer = 0;
 		endTurn = false;
-		players[0].GetComponent<Player>().turnOver = false;
+		TogglePlayer (0);			// turn the first player on
 
 	}
 
@@ -48,12 +48,22 @@ public class GameController : MonoBehaviour {
 
 
 	/**
+	 * 	Turn a player's script on or off
+	 * 		- control "my turn" options like raycasting
+	 * 		- eliminate turn control flow from within player scripts
+	 */
+	void TogglePlayer (int index) {
+		players [index].GetComponent<Player>().enabled = !(players[index].GetComponent<Player>().enabled);
+	}
+
+
+	/**
 	 * 	Thread for turn over actions
 	 */
 	IEnumerator NextPlayer () {
 
 		// end the last player's turn
-		players [currentPlayer].GetComponent<Player>().turnOver = true;
+		TogglePlayer (currentPlayer);
 
 		// index to the next player
 		currentPlayer++;
@@ -67,7 +77,7 @@ public class GameController : MonoBehaviour {
 		yield return new WaitForSeconds (1f);
 
 		// start the next player's turn
-		players [currentPlayer].GetComponent<Player>().turnOver = false;
+		TogglePlayer (currentPlayer);
 
 	}
 

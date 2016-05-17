@@ -23,9 +23,6 @@ public class Player : MonoBehaviour {
 		}
 	}
 
-	// control flow - notifies gamecontroller
-	public bool turnOver;
-
 	// raycast against gameboard
 	private RaycastHit hit;
 
@@ -33,13 +30,12 @@ public class Player : MonoBehaviour {
 	void Update () {
 		
 		// raycast for mouse clicks on board space
-		if (!turnOver && Input.GetMouseButton (0)) {
+		if (Input.GetMouseButton (0)) {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
 			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
 				// set the space to current player color
 				hit.collider.GetComponent<GameSpace> ().targetColor = tokenColor;
 				// send message that player turn is over
-				turnOver = true;
 				GameController.endTurn = true;
 			}
 		}
