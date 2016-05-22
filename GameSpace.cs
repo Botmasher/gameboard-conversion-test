@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameSpace : MonoBehaviour {
 
@@ -9,6 +10,10 @@ public class GameSpace : MonoBehaviour {
 	// ids to check row and column location from other scripts
 	public int rowIndex;
 	public int columnIndex;
+
+	// list of players that can change this square
+	public List<int> possibleChangers = new List<int> ();
+
 
 	void Start () {
 		targetColor = GetComponent<MeshRenderer> ().material.color;
