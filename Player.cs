@@ -33,17 +33,8 @@ public class Player : MonoBehaviour {
 		if (Input.GetMouseButton (0)) {
 			Physics.Raycast (Camera.main.ScreenPointToRay (Input.mousePosition), out hit);
 			if (hit.collider != null && hit.collider.transform.parent.tag == "Gameboard") {
-				// try to set the space to current player color
-				if (hit.collider.gameObject.GetComponent<GameSpace>().possibleChangers.Contains(this.index)) {
-					// activate this space
-					hit.collider.GetComponent<GameSpace> ().targetColor = tokenColor;
-
-					// get the adjacent spaces to recognize themselves as possible player targets
-					// iterate through them, checking GameSpace scripts for col and row values?
-
-					// send message that player turn is over
-					GameController.endTurn = true;
-				}
+				// end the turn if you can set the space to this player's color
+				GameController.endTurn = hit.collider.gameObject.GetComponent<GameSpace>().SetColor(index, tokenColor) ? true : false;
 			}
 		}
 

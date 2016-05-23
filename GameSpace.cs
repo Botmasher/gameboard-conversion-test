@@ -12,7 +12,7 @@ public class GameSpace : MonoBehaviour {
 	public int columnIndex;
 
 	// list of players that can change this square
-	public List<int> possibleChangers = new List<int> ();
+	private List<int> possiblePlayers = new List<int> ();
 
 
 	void Start () {
@@ -25,4 +25,23 @@ public class GameSpace : MonoBehaviour {
 			GetComponent<MeshRenderer> ().material.color = Color.Lerp (GetComponent<MeshRenderer> ().material.color, targetColor, 2f * Time.deltaTime);
 		}
 	}
+
+
+	/**
+	 * 	Update the space with the player's color if player is allowed to
+	 */
+	public bool SetColor (int playerIndex, Color newColor) {
+		if (possiblePlayers.Contains(playerIndex)) {
+			targetColor = newColor;
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * 	Warn adjacent spaces that they can change to player's color
+	 */
+	void AlertNearbySpaces () {
+	}
+
 }
