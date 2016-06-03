@@ -38,10 +38,4 @@ public class GameSpace : MonoBehaviour {
 		return false;
 	}
 
-	/**
-	 * 	Warn adjacent spaces that they can change to player's color
-	 */
-	void AlertNearbySpaces () {
-	}
-
 }
