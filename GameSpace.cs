@@ -12,7 +12,7 @@ public class GameSpace : MonoBehaviour {
 	public int columnIndex;
 
 	// list of players that can change this square
-	private List<int> possiblePlayers = new List<int> ();
+	public List<int> possiblePlayers = new List<int> ();
 
 
 	void Start () {
@@ -31,8 +31,14 @@ public class GameSpace : MonoBehaviour {
 	 * 	Update the space with the player's color if player is allowed to
 	 */
 	public bool SetColor (int playerIndex, Color newColor) {
-		if (possiblePlayers.Contains(playerIndex)) {
+
+		// change this space if player can and player does not currently have it
+		if (possiblePlayers.Contains(playerIndex) && this.targetColor != newColor) {
+			// change color
 			targetColor = newColor;
+			// notify nearby spaces of impending influence
+			this.transform.GetComponentInParent<GameGrid>().AlertNearbySpaces (rowIndex, columnIndex, playerIndex);
+			// let caller know of successful change
 			return true;
 		}
 		return false;

@@ -26,7 +26,6 @@ public class GameGrid : MonoBehaviour {
 
 
 	void Start () {
-
 		// empty grid for storing spawned game spaces
 		grid = new List<List<GameObject>> ();
 		// current locations for placing spawn objects within grid
@@ -55,6 +54,16 @@ public class GameGrid : MonoBehaviour {
 			grid.Add (rowList);
 			yLoc ++;
 		}
+
+
+		// choose possible starting spaces for players 1 and 2 (top and bottom rows)
+		for (int i=0; i < grid[0].Count; i++) {
+			// bottom row
+			grid [0][i].GetComponent<GameSpace>().possiblePlayers.Add (0);
+			// top row
+			grid [grid.Count-1][i].GetComponent<GameSpace>().possiblePlayers.Add (1);
+		}
+
 	}
 	
 
@@ -66,23 +75,36 @@ public class GameGrid : MonoBehaviour {
 	 * 	Warn adjacent spaces that they can change to player's color.
 	 * 	Called within a GameSpace script e.g. when that space converted to a new color.
 	 * 
-	 *  Motivation: other space can now check independently on player click
+	 *  Motivation: other space can now check itself independently on player click
 	 * 
-	 * 	Challenges:
-	 * 		- how to notify player that player is done with turn?
-	 * 		- can player just check on own if space didn't turn?
-	 * 
-	 *  	row 		: the grid row location of the alerting space
-	 * 		col 		: the grid column location of the alerting space
-	 *  	playerIndex : player's ID - decides direction to notify
-	 * 		playerColor : player's Color - which color the space should be prepared to turn
+	 *  row 		: the grid row location of the alerting space
+	 * 	col 		: the grid column location of the alerting space
+	 *  playerIndex : player's ID - decides direction to notify
 	 */
-	public void AlertNearbySpaces (int row, int col, int playerIndex, Color playerColor) {
-		// figure out which row the next space is in grid matrix
-		// figure out which col the next space is in grid matrix
-		// notify the space
-		// tell the space which player to expect
-		// tell the space which color to expect?
+	public void AlertNearbySpaces (int row, int col, int playerIndex) {
+
+		// figure out which row, col the next space is in grid matrix
+		if (row < grid.Count - 1 && playerIndex == 0) {
+
+			GameSpace nextSpace = grid [row + 1] [col].GetComponent<GameSpace> ();
+
+			// tell next above space to expect first player
+			if (!nextSpace.possiblePlayers.Contains (playerIndex)) {
+				nextSpace.possiblePlayers.Add (playerIndex);
+			}
+		
+		// 
+		} else if (row > 0 && playerIndex == 1) {
+
+			GameSpace nextSpace = grid [row - 1] [col].GetComponent<GameSpace> ();
+
+			// tell next space below this to expect second player
+			if (!nextSpace.possiblePlayers.Contains (playerIndex)) {
+				nextSpace.possiblePlayers.Add (playerIndex);
+			}
+		
+		}
+
 	}
 
 }
