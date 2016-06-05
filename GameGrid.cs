@@ -18,14 +18,9 @@ public class GameGrid : MonoBehaviour {
 	// store all instantiated spaces in a matrix
 	private List<List<GameObject>> grid;
 
-	/*
-	// player sides with entry points for each player
-	private int numberOfPlayers;
-	public GameObject entrySpace;
-	*/
-
 
 	void Start () {
+		
 		// empty grid for storing spawned game spaces
 		grid = new List<List<GameObject>> ();
 		// current locations for placing spawn objects within grid
@@ -65,11 +60,7 @@ public class GameGrid : MonoBehaviour {
 		}
 
 	}
-	
 
-	void Update () {
-	
-	}
 
 	/**
 	 * 	Warn adjacent spaces that they can change to player's color.
@@ -84,6 +75,7 @@ public class GameGrid : MonoBehaviour {
 	public void AlertNearbySpaces (int row, int col, int playerIndex) {
 
 		// figure out which row, col the next space is in grid matrix
+
 		if (row < grid.Count - 1 && playerIndex == 0) {
 
 			GameSpace nextSpace = grid [row + 1] [col].GetComponent<GameSpace> ();
@@ -93,7 +85,6 @@ public class GameGrid : MonoBehaviour {
 				nextSpace.possiblePlayers.Add (playerIndex);
 			}
 		
-		// 
 		} else if (row > 0 && playerIndex == 1) {
 
 			GameSpace nextSpace = grid [row - 1] [col].GetComponent<GameSpace> ();

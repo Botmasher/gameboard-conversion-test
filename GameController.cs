@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameController : MonoBehaviour {
 
 	// list of colors used to create players
-	public List<Color> colors = new List<Color>();
+	public Color[] colors = new Color[2];
 	// list to store created players
 	private List<GameObject> players = new List<GameObject>();
 
@@ -15,11 +16,14 @@ public class GameController : MonoBehaviour {
 	// game control flow
 	public static bool endTurn;
 
+	// UI elements
+	public Text playerTurnText;		// display who is the current player
+
 
 	void Start () {
 
-		// create players within player list based on how many colors were chosen
-		for (int i = 0; i < colors.Count; i++) {
+		// create players list based on how many colors were chosen
+		for (int i = 0; i < colors.Length; i++) {
 			// add and name player
 			players.Add (new GameObject (System.String.Format ("Player {0}", i)));
 			// set player's script behavior
@@ -38,7 +42,6 @@ public class GameController : MonoBehaviour {
 
 
 	void Update () {
-
 		// turn over triggered by individual players
 		if (endTurn) {
 			StartCoroutine (NextPlayer ());
@@ -48,17 +51,16 @@ public class GameController : MonoBehaviour {
 
 
 	/**
-	 * 	Turn a player's script on or off
-	 * 		- control "my turn" options like raycasting
-	 * 		- eliminate turn control flow from within player scripts
+	 * 	Turn a player on/off and update UI readout to show current player
 	 */
 	void TogglePlayer (int index) {
 		players [index].GetComponent<Player>().enabled = !(players[index].GetComponent<Player>().enabled);
+		playerTurnText.text = string.Format ("Player {0} - your turn!", currentPlayer+1);
 	}
 
 
 	/**
-	 * 	Thread for turn over actions
+	 * 	End player's turn and start next player
 	 */
 	IEnumerator NextPlayer () {
 

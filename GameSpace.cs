@@ -19,6 +19,7 @@ public class GameSpace : MonoBehaviour {
 		targetColor = GetComponent<MeshRenderer> ().material.color;
 	}
 
+
 	void Update () {
 		// lerp towards new color when target color gets changed
 		if (GetComponent<MeshRenderer> ().material.color != targetColor) {
@@ -30,18 +31,19 @@ public class GameSpace : MonoBehaviour {
 	/**
 	 * 	Update the space with the player's color if player is allowed to
 	 */
-	public bool SetColor (int playerIndex, Color newColor) {
+	public bool SetColor (int playerIndex, Color newColor, float conversionChance) {
 
 		// change this space if player can and player does not currently have it
 		if (possiblePlayers.Contains(playerIndex) && this.targetColor != newColor) {
-			// change color
-			targetColor = newColor;
-			// notify nearby spaces of impending influence
-			this.transform.GetComponentInParent<GameGrid>().AlertNearbySpaces (rowIndex, columnIndex, playerIndex);
-			// let caller know of successful change
-			return true;
+			if (Random.value <= conversionChance) {
+				// change color
+				targetColor = newColor;
+				// notify nearby spaces of impending influence
+				this.transform.GetComponentInParent<GameGrid> ().AlertNearbySpaces (rowIndex, columnIndex, playerIndex);
+			}
+			return true;	// let caller know this counts as a turn
 		}
-		return false;
+		return false; 	// this didn't count as a turn - space not choosable for this player
 	}
 
 }
