@@ -17,6 +17,10 @@ public class GameSpace : MonoBehaviour {
 	// whether or not currently taken by a player
 	public bool isTaken;
 
+	// sideblock counters used for takeover of this space by opposing player
+	private List<GameObject> takeOverCounters = new List<GameObject> ();
+
+
 	void Start () {
 		targetColor = GetComponent<MeshRenderer> ().material.color;
 		isTaken = false;
@@ -45,9 +49,13 @@ public class GameSpace : MonoBehaviour {
 				this.transform.GetComponentInParent<GameGrid> ().AlertNearbySpaces (rowIndex, columnIndex, playerIndex);
 				isTaken = true;
 			} else if (Random.value <= conversionChance && isTaken) {
-				// harder to influence
+				// space is taken and is harder to influence!
 				// - spawn up to 3 side counter blocks, once per successful influence
-				// - once you have 3, you take this spot
+				if (takeOverCounters.Count < 3) {
+					// add a takeover counter to the list
+				} else {
+					// once you have 3, take this space
+				}
 				// - if there are other player blocks, take them down a notch instead
 			}
 			return true;	// let caller know this counts as a turn
