@@ -19,6 +19,7 @@ public class GameSpace : MonoBehaviour {
 
 	// sideblock counters used for takeover of this space by opposing player
 	private List<GameObject> takeOverCounters = new List<GameObject> ();
+	public GameObject counterPrefab;
 
 
 	void Start () {
@@ -52,7 +53,8 @@ public class GameSpace : MonoBehaviour {
 				// space is taken and is harder to influence!
 				// - spawn up to 3 side counter blocks, once per successful influence
 				if (takeOverCounters.Count < 3) {
-					// add a takeover counter to the list
+					// add a takeover counter to the board and the list
+					takeOverCounters.Add (Instantiate(counterPrefab, transform.right * takeOverCounters.Count, Quaternion.identity) as GameObject);
 				} else {
 					// once you have 3, take this space
 				}
