@@ -54,7 +54,7 @@ public class GameSpace : MonoBehaviour {
 				// - spawn up to 3 side counter blocks, once per successful influence
 				if (takeOverCounters.Count < 3) {
 					// add a takeover counter to the board and the list
-					takeOverCounters.Add (Instantiate(counterPrefab, transform.right * takeOverCounters.Count, Quaternion.identity) as GameObject);
+					takeOverCounters.Add (Instantiate(counterPrefab, new Vector2 (transform.position.x+1, transform.position.y+takeOverCounters.Count), Quaternion.identity) as GameObject);
 				} else {
 					// once you have 3, take this space
 				}
